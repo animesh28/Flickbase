@@ -72,6 +72,62 @@ router.route('/profile')
         res.status(400).json({message: 'Error', error: error})
     }
 })
+.patch(isValidUser, grantAccess('updateOwn', 'profile'), async (req,res)=>{
+    try{
+        const user = await User.findOneAndUpdate(
+            {_id: req.user._id},
+            {
+                "$set": {
+                    firstname: req.body.firstname,
+                    lastname: req.body.lastname,
+                    age: req.body.age
+                }
+            },
+            { new: true }
+        )
+
+        if(!user) return res.status(400).json({message: 'User not found'})
+
+        res.status(200).json(getUserProps(user))
+    } catch(error) {
+        res.status(400).json({message: 'Problem occured while updating profile', error: error})
+    }
+})
+
+router.route('/isauth')
+.get(isValidUser, async(req,res) => {
+    res.status(200).send(getUserProps(req.user))
+})
+
+router.route('/update_email')
+.patch(isValidUser, grantAccess('updateOwn', 'profile'), async (req,res)=>{
+
+    try {
+
+    if(await User.emailTaken(req.body.newemail)) {
+        return res.status(400).json({message: "E-mail alerady taken"})
+    }
+
+    const user = await User.findOneAndUpdate(
+        { _id: req.user._id, email: req.body.email },
+        {
+            "$set": {
+                email: req.body.newemail
+            }
+        },
+        { new: true }
+    )
+
+    if(!user) return res.status(400).json({message: 'User not found'})
+
+    const token = user.generateToken()
+
+    res.cookie('x-access-token', token)
+    .status(200).send({email: user.email})
+    } catch(error) {
+        res.status(400).json({message: 'Problem occured while updating profile', error: error})
+    }
+})
 
 const getUserProps = (user) => {
     return {
