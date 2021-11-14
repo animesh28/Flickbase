@@ -5,6 +5,7 @@ const bodyParser = require('body-parser')
 require('dotenv').config()
 
 const users = require('./routes/api/user')
+const articles = require('./routes/api/article')
 const { checkToken } = require('./middlewares/auth')
 
 
@@ -19,6 +20,7 @@ mongoose.connect(MongoUri, {
 app.use(bodyParser.json())
 app.use(checkToken)
 app.use('/api/users', users)
+app.use('/api/articles', articles)
 
 const port = process.env.PORT || 3001
 
