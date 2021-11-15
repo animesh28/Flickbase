@@ -1,6 +1,7 @@
 const mongoose = require('mongoose')
 const validator = require('validator')
 require('dotenv').config()
+const aggregatePaginate = require("mongoose-aggregate-paginate-v2")
 
 const articleSchema = mongoose.Schema({
     title: {
@@ -47,6 +48,8 @@ const articleSchema = mongoose.Schema({
 },{
     timestamps: true
 })
+
+articleSchema.plugin(aggregatePaginate)
 
 const Article = mongoose.model('Article', articleSchema)
 

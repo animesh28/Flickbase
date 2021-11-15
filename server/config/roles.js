@@ -13,6 +13,9 @@ let roleObj = {
             'read:any': ['*'],
             'update:any': ['*'],
             'delete:any': ['*']
+        },
+        articles: {
+            'read:any': ['*']
         }
     },
     user: {

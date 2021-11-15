@@ -8,6 +8,7 @@ const { Article } = require('../../models/article_model')
 //middleware
 const { isValidUser } = require('../../middlewares/auth')
 const { grantAccess } = require('../../middlewares/grantAccess')
+const { sortArgsHelper } = require('../../config/helpers')
 
 router.route('/admin/add_article') //post
 .post(isValidUser, grantAccess('createAny', 'article'), async(req,res) => {
@@ -86,6 +87,50 @@ router.route('/get_article/:id')
     res.status(200).json(article)
     } catch(error) {
         res.status(400).json({message: 'Error occurred while fetching article', error: error})
+    }
+})
+
+router.route('/loadmore')
+.post(async(req,res) => {
+    try{
+        let sortArgs = sortArgsHelper(req.body)
+
+        const articles = await Article
+        .find({status: 'public'})
+        .sort([[sortArgs.sortBy, sortArgs.order]])
+        .skip(sortArgs.skip)
+        .limit(sortArgs.limit)
+
+        if(!articles) return res.status(400).json({message: 'Error fetching article', error: error})
+
+        res.status(200).json(articles)
+    } catch(error) {
+        res.status(400).json({message: 'Error occurred while fetching article', error: error})
+    }
+})
+
+router.route('/admin/paginate')
+.post(isValidUser, grantAccess('readAny', 'articles'), async(req,res) => {
+    try{
+        const limit = req.body.limit ? req.body.limit : 5
+
+        let aggQuery = Article.aggregate([
+            {$match: {status: 'public'}},
+            {$match: {title: { $regex: /Article/}}}
+        ])
+
+        const options = {
+            page: req.body.page,
+            limit,
+            sort: {_id: 'desc'}
+        }
+
+        const articles = await Article.aggregatePaginate(aggQuery, options)
+
+        res.status(200).json(articles)
+    } catch(error) {
+        console.log(error);
+        res.status(400).json({message: 'Error fetching article', error: error})
     }
 })
 
