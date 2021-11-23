@@ -115,8 +115,8 @@ router.route('/admin/paginate')
         const limit = req.body.limit ? req.body.limit : 5
 
         let aggQuery = Article.aggregate([
-            {$match: {status: 'public'}},
-            {$match: {title: { $regex: /Article/}}}
+            {$match: {status: 'public'}}/* ,
+            {$match: {title: { $regex: /Article/}}}*/
         ])
 
         const options = {
