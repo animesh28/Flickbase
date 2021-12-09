@@ -9,6 +9,8 @@ const ReduxStore = () => {
         appReducers,
         composeEnhancers(applyMiddleware(thunk))
     )
+
+    return store;
 }
 
 export default ReduxStore
