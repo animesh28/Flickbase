@@ -1,3 +1,4 @@
+import cookie from 'react-cookies'
 import { toast } from 'react-toastify'
 
 export const showToast = (type, msg) => {
@@ -16,3 +17,7 @@ export const showToast = (type, msg) => {
             return false
     }
 }
+
+export const getCookie = () => cookie.load('x-access-token')
+export const removeCookie = () => cookie.remove('x-access-token')
+export const getAuthHeader = { headers: { 'x-access-token': getCookie() } }

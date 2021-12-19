@@ -42,7 +42,7 @@ router.route('/login')
     try{
         //check email
         let user = await User.findOne({email: req.body.email})
-        if(!user) return res.status(400).json({message: 'e-mail not registered'})
+        if(!user) return res.status(400).json({message: 'E-mail not registered'})
 
         //check password
         const passwordMatch = await user.comparePassword(req.body.password)

@@ -29,4 +29,3 @@ let roleObj = {
 const roles = new AccessControl(roleObj);
 
 module.exports = { roles }
-
