@@ -29,9 +29,6 @@ const Home = () => {
          { articles && articles.articles ?
             articles.articles.map((item) => (
             <Grid key={item._id} item xs={12} sm={6} lg={3}>
-              <div>
-                Carousel
-              </div>
               <ArticleCard key={item._id} article={item}/>
             </Grid>
             ))
